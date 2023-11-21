@@ -1,4 +1,4 @@
-# gifty-factory-back Project
+# gifty-factory-back
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
@@ -35,12 +35,12 @@ The application, packaged as an _über-jar_, is now runnable using `java -jar ta
 
 You can create a native executable using: 
 ```shell script
-./mvnw package -Pnative
+./mvnw package -Dnative
 ```
 
 Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
 ```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
+./mvnw package -Dnative -Dquarkus.native.container-build=true
 ```
 
 You can then execute your native executable with: `./target/gifty-factory-back-1.0.0-SNAPSHOT-runner`
@@ -49,7 +49,7 @@ If you want to learn more about building native executables, please consult http
 
 ## Related Guides
 
-- Kotlin ([guide](https://quarkus.io/guides/kotlin)): Write your services in Kotlin
+- RESTEasy Reactive ([guide](https://quarkus.io/guides/resteasy-reactive)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
 
 ## Provided Code
 
