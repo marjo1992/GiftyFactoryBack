@@ -6,6 +6,20 @@ pom.xml.versionsBackup
 release.properties
 .flattened-pom.xml
 
+HELP.md
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
 # Eclipse
 .project
 .classpath
@@ -20,6 +34,14 @@ bin/
 
 # NetBeans
 nb-configuration.xml
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 # Visual Studio Code
 .vscode
@@ -41,3 +63,4 @@ nb-configuration.xml
 
 # Plugin directory
 /.quarkus/cli/plugins/
+

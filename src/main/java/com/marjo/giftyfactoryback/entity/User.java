@@ -1,13 +1,16 @@
-package com.marjo.entity;
+package com.marjo.giftyfactoryback.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -17,9 +20,12 @@ import lombok.Data;
 public class User {
 
     @Id
+    long personId;
+
     @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "person_id")
-    @JsonBackReference
+    //@JoinColumn(name = "personId")
+    //@JsonBackReference
+    @MapsId
     Person person; // PK - FK vers Person
 
     @Column(name = "mail", length = 50, nullable = false, unique = true)

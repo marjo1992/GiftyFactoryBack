@@ -1,4 +1,4 @@
-package com.marjo.entity;
+package com.marjo.giftyfactoryback.entity;
 
 import java.time.LocalDate;
 
@@ -12,12 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Entity
 @Data
 @RequiredArgsConstructor
+@Table(name = "PERSON")
 public class Person {
 
     @Id
