@@ -1,16 +1,11 @@
 package com.marjo.giftyfactoryback.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -28,21 +23,24 @@ public class User {
     @MapsId
     Person person; // PK - FK vers Person
 
-    @Column(name = "mail", length = 50, nullable = false, unique = true)
-    String mail;
+    @Column(name = "username", length = 50, nullable = false, unique = true)
+    String username;
 
-    @Column(name = "pasword", length = 50, nullable = false)
+    @Column(name = "email", length = 50, nullable = false, unique = true)
+    String email;
+
+    @Column(name = "password", length = 100, nullable = false)
     String password;
 
     @Column(name = "picture", length = 50)
     String picture;
 
-    @Column(name = "is_mail_confirmed", nullable = false)
-    boolean isMailConfirmed = false; // Vrai si l'utilisateur à confirmer son adresse mail (par un mail de
+    @Column(name = "is_email_confirmed", nullable = false)
+    boolean isEmailConfirmed = false; // Vrai si l'utilisateur à confirmer son adresse mail (par un mail de
                                      // confirmation)
 
-    @Column(name = "mail_token", length = 50)
-    String mailToken; // string à retourner pour confirmer le mail
+    @Column(name = "email_token", length = 50)
+    String emailToken; // string à retourner pour confirmer le mail
 
     @Column(name = "is_himself_owner", nullable = false)
     boolean isHimselfOwner = true; // Faux dans le cas où un utilisateur crée son compte, mais sa "personne" est

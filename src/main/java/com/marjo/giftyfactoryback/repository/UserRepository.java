@@ -1,5 +1,7 @@
 package com.marjo.giftyfactoryback.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,7 +10,9 @@ import com.marjo.giftyfactoryback.entity.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    User findByMail(String mail);
+    Optional<User> findByUsername(String username);
 
-    public void deleteByMail(String mail);
+    Boolean existsByUsername(String username);
+
+    Boolean existsByEmail(String email);
 }

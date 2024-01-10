@@ -2,26 +2,29 @@ package com.marjo.giftyfactoryback.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.marjo.giftyfactoryback.entity.Person;
 import com.marjo.giftyfactoryback.entity.User;
+import com.marjo.giftyfactoryback.error.exception.UserAlreadyExistsException;
 import com.marjo.giftyfactoryback.repository.PersonRepository;
 import com.marjo.giftyfactoryback.repository.UserRepository;
+import com.marjo.giftyfactoryback.resource.input.NewPersonRequest;
+import com.marjo.giftyfactoryback.resource.input.SignupRequest;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
-@Controller
+@Service
+@RequiredArgsConstructor
 public class PersonService {
 
-    @Autowired
-    PersonRepository personRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final PersonRepository personRepository;
+    private final UserRepository userRepository;
 
     public String greeting(String name) {
         return "hello " + name;
@@ -33,23 +36,53 @@ public class PersonService {
     }
 
     @Transactional
-    public String create() {
-   
-        final String randomName = RandomStringUtils.randomAlphabetic(10);
-
-        Person person = new Person();
-        person.setFirstname(randomName);
-        person.setName(randomName);
-        person.setBirthday(LocalDate.of(2017, 11, 15));
-        personRepository.save(person);
-
-        User user = new User();
-        user.setPerson(person);
-        user.setMail(randomName + "@mail.com");
-        user.setPassword("password");
-        userRepository.save(user);
-
-        return "user " + person.getName() + " créé  avec l'id " + person.getId();
+    public Optional<Person> findById(final long id) {
+        return personRepository.findById(id);
     }
 
+    @Transactional
+    public void createNewUser(SignupRequest signUpRequest) {
+
+        if (userRepository.existsByUsername(signUpRequest.username())) {
+            throw new UserAlreadyExistsException("A user with username " + signUpRequest.username() + " already exists");
+        }
+
+        if (userRepository.existsByEmail(signUpRequest.email())) {
+            throw new UserAlreadyExistsException("A user with email " + signUpRequest.username() + " already exists");
+        }
+
+        Person person = new Person();
+        person.setName(signUpRequest.name());
+        person.setFirstname(signUpRequest.firstname());
+        person.setBirthday(signUpRequest.birthday());
+
+        personRepository.save(person);
+        // TODO : ou Person createdPerson = personRepository.save(personToCreate);
+
+        User user = new User();
+        user.setPerson(person); // TODO : ou user.setPersonId(createdPerson.getId());        
+        user.setUsername(signUpRequest.username());
+        user.setEmail(signUpRequest.email());
+        user.setPassword(passwordEncoder.encode(signUpRequest.password()));
+        user.setPicture(signUpRequest.picture());
+        user.setHimselfOwner(true);
+        
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public String createNewPersonWithAnExistingUser(Long personId, NewPersonRequest newPersonRequest) {
+
+        User creatorUser = new User();
+        creatorUser.setPersonId(personId);
+
+        Person person = new Person();
+        person.setFirstname(newPersonRequest.firstname());
+        person.setName(newPersonRequest.name());
+        person.setBirthday(newPersonRequest.birthday());
+        person.setOwner(creatorUser);
+        Person createdPerson = personRepository.save(person);
+
+        return "person " + createdPerson.getName() + " créé  avec l'id " + createdPerson.getId();
+    }
 }
