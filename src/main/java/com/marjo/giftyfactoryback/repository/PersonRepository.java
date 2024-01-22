@@ -18,12 +18,12 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
                 from Person p 
                 where (:name is null or p.name = :name) 
                 and (:firstname is null or p.firstname = :firstname) 
-                and (:birthday is null or p.birthday = :birthday)
+                and (:birthdate is null or p.birthdate = :birthdate)
                 """)
         List<Person> findBy(
                         @Param("name") String name,
                         @Param("firstname") String firstname,
-                        @Param("birthday") LocalDate birthday);
+                        @Param("birthdate") LocalDate birthdate);
 
         Optional<Person> findById(@Param("id") long id);
 

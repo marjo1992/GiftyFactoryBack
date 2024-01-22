@@ -25,7 +25,7 @@ public class PersonResourceIT {
         Person person = new Person();
         person.setName(RandomStringUtils.randomAlphabetic(10));
         person.setFirstname(RandomStringUtils.randomAlphabetic(15));
-        person.setBirthday(LocalDate.of(2020, 1, 8));
+        person.setBirthdate(LocalDate.of(2020, 1, 8));
         return person;
     }
 

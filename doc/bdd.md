@@ -4,7 +4,7 @@ class PERSONNE as "Personne" {
     - <color:red><u>id</u></color> : int -> identidiant unique
     <color:blue><u>name</u></color> : varchar 50 -> nom
     <color:blue><u>firstname</u></color> : varchar 50 -> prénom
-    <color:blue><u>birthday</u></color> : date -> date de naissance
+    <color:blue><u>birthdate</u></color> : date -> date de naissance
     + <color:blue>owner</color> - <color:green>FK vers Utilisateur</color> : créateur de la personne / utilisateur
     responsable = elle validera les liens de la personnes tant que 
         la personne n'est pas associé à un utilisateur, elle peux modifier 

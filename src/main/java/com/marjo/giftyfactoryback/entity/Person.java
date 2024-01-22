@@ -34,7 +34,7 @@ public class Person {
     String firstname;
 
     @Column(nullable = false)
-    LocalDate birthday;
+    LocalDate birthdate;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner__user_id")

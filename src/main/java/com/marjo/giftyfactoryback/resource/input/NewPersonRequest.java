@@ -5,5 +5,5 @@ import java.time.LocalDate;
 public record NewPersonRequest(
     String name,
     String firstname,
-    LocalDate birthday) {
+    LocalDate birthdate) {
 }

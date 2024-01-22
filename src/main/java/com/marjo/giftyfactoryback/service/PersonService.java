@@ -31,8 +31,8 @@ public class PersonService {
     }
 
     @Transactional
-    public List<Person> findBy(String name, String firstname, LocalDate birthday) {
-        return personRepository.findBy(name, firstname, birthday);
+    public List<Person> findBy(String name, String firstname, LocalDate birthdate) {
+        return personRepository.findBy(name, firstname, birthdate);
     }
 
     @Transactional
@@ -54,7 +54,7 @@ public class PersonService {
         Person person = new Person();
         person.setName(signUpRequest.name());
         person.setFirstname(signUpRequest.firstname());
-        person.setBirthday(signUpRequest.birthday());
+        person.setBirthdate(signUpRequest.birthdate());
 
         personRepository.save(person);
         // TODO : ou Person createdPerson = personRepository.save(personToCreate);
@@ -79,7 +79,7 @@ public class PersonService {
         Person person = new Person();
         person.setFirstname(newPersonRequest.firstname());
         person.setName(newPersonRequest.name());
-        person.setBirthday(newPersonRequest.birthday());
+        person.setBirthdate(newPersonRequest.birthdate());
         person.setOwner(creatorUser);
         Person createdPerson = personRepository.save(person);
 
