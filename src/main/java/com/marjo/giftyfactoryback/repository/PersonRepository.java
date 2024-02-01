@@ -16,8 +16,8 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
 
         @Query("""
                 from Person p 
-                where (:name is null or p.name = :name) 
-                and (:firstname is null or p.firstname = :firstname) 
+                where (:name is null or p.name like %:name%) 
+                and (:firstname is null or p.firstname like %:firstname%) 
                 and (:birthdate is null or p.birthdate = :birthdate)
                 """)
         List<Person> findBy(
