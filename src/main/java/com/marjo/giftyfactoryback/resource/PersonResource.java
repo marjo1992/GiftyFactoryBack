@@ -25,7 +25,6 @@ import com.marjo.giftyfactoryback.resource.input.CreateOrModifyPersonRequest;
 import com.marjo.giftyfactoryback.resource.output.PersonResponse;
 import com.marjo.giftyfactoryback.service.PersonService;
 import com.marjo.giftyfactoryback.utils.CheckUtility;
-import com.marjo.giftyfactoryback.utils.ConverterUtility;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,9 +48,9 @@ public class PersonResource {
     public PersonResponse getPerson(
             @PathVariable("id") @Parameter(name = "id", description = "Person id", example = "1") long id) {
         return service.findById(id)
-                .map(ConverterUtility.personToPersonResponse)
+                .map(PersonResponse.fromPerson)
                 .orElseThrow(() -> new NoResultException(
-                        "No person exists with id -'" + id + "' does no exist"));
+                        "No person exists with id -'" + id));
     }
 
     /******** Get person by name, firstname or birthdate ********/
@@ -71,7 +70,7 @@ public class PersonResource {
                         birthdate != null ? birthdate.toString() : null));
 
         return service.findBy(name, firstname, birthdate).stream()
-                .map(ConverterUtility.personToPersonResponse)
+                .map(PersonResponse.fromPerson)
                 .toList();
     }
 
@@ -81,7 +80,8 @@ public class PersonResource {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Long> createAPerson(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody CreateOrModifyPersonRequest newPersonRequest) {
-        long createPersonId = service.createNewPersonWithAnExistingUser(userDetails.getPersonId(), newPersonRequest);
+        long createPersonId = service.createNewPersonWithAnExistingUser(userDetails.getPersonId(),
+                newPersonRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createPersonId);
     }
 

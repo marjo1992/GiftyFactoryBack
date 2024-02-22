@@ -10,7 +10,6 @@ import com.marjo.giftyfactoryback.auth.UserDetailsImpl;
 import com.marjo.giftyfactoryback.error.exception.NoResultException;
 import com.marjo.giftyfactoryback.resource.output.UserResponse;
 import com.marjo.giftyfactoryback.service.UserService;
-import com.marjo.giftyfactoryback.utils.ConverterUtility;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,7 +31,7 @@ public class UserResource {
     @GetMapping("")
     public UserResponse getUserConnected(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return service.findById(userDetails.getPersonId())
-                .map(ConverterUtility.userToUserResponse)
+                .map(UserResponse.fromUser)
                 .orElseThrow(() -> new NoResultException("An error has occured"));
     }
 

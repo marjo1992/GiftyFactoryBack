@@ -51,7 +51,7 @@ public class PersonService {
         }
 
         if (userRepository.existsByEmail(signUpRequest.email())) {
-            throw new UserAlreadyExistsException("A user with email " + signUpRequest.username() + " already exists");
+            throw new UserAlreadyExistsException("A user with email " + signUpRequest.email() + " already exists");
         }
 
         Person person = new Person();
