@@ -3,7 +3,10 @@ package com.marjo.giftyfactoryback.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import com.marjo.giftyfactoryback.resource.input.CreateOrModifyPersonRequest;
 import com.marjo.giftyfactoryback.resource.input.SignupRequest;
 import com.marjo.giftyfactoryback.utils.CheckUtility;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +31,7 @@ public class PersonService {
     private final PasswordEncoder passwordEncoder;
     private final PersonRepository personRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     public String greeting(String name) {
         return "hello " + name;
@@ -43,7 +48,7 @@ public class PersonService {
     }
 
     @Transactional
-    public void createNewUser(SignupRequest signUpRequest) {
+    public void createNewUser(SignupRequest signUpRequest) throws MessagingException {
 
         if (userRepository.existsByUsername(signUpRequest.username())) {
             throw new UserAlreadyExistsException(
@@ -62,6 +67,8 @@ public class PersonService {
         personRepository.save(person);
         // TODO : ou Person createdPerson = personRepository.save(personToCreate);
 
+        String token = UUID.randomUUID().toString().toUpperCase();
+
         User user = new User();
         user.setPerson(person); // TODO : ou user.setPersonId(createdPerson.getId());
         user.setUsername(signUpRequest.username());
@@ -69,8 +76,10 @@ public class PersonService {
         user.setPassword(passwordEncoder.encode(signUpRequest.password()));
         user.setPicture(signUpRequest.picture());
         user.setHimselfOwner(true);
-
+        user.setEmailToken(token);
         userRepository.save(user);
+        
+        emailService.sendHtmlEmail(user.getPersonId(), signUpRequest.email(), token);
     }
 
     @Transactional
@@ -109,5 +118,30 @@ public class PersonService {
     public User getUserAssociatedToPerson(long personId) {
         return userRepository.findById(personId).orElseThrow(() -> new NoPersonExistsException("User not exist"));
     }
+
+    @Transactional
+    public void confirmEmail(String token, long id) {
+        
+        Optional<User> userOpt = userRepository.findById(id);
+
+        if (userOpt.isEmpty()) {
+            throw new NoPersonExistsException("Any person exist with id " + id);
+        }
+
+        User user = userOpt.get();
+
+        if (BooleanUtils.isTrue(user.isEmailConfirmed())) {
+            throw new NoPersonExistsException("This person has already confirmed his email");
+        }
+
+        if (! StringUtils.equals(user.getEmailToken(), token)) {
+            throw new NoPersonExistsException("Invalid token");
+        }
+
+        user.setEmailConfirmed(true);
+        user.setEmailToken(null);
+        userRepository.save(user);
+    }
+
 
 }

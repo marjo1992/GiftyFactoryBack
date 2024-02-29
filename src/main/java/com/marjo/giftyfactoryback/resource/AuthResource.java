@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +22,11 @@ import com.marjo.giftyfactoryback.resource.input.LoginRequest;
 import com.marjo.giftyfactoryback.resource.input.SignupRequest;
 import com.marjo.giftyfactoryback.resource.output.JwtResponse;
 import com.marjo.giftyfactoryback.resource.output.MessageResponse;
+import com.marjo.giftyfactoryback.service.EmailService;
 import com.marjo.giftyfactoryback.service.PersonService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -35,6 +39,9 @@ public class AuthResource {
 
     @Autowired
     PersonService personService;
+
+    @Autowired
+    EmailService emailService;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -61,10 +68,20 @@ public class AuthResource {
     @Operation(summary = "Signup", description = "Create a new user and associated person")
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws MessagingException {
 
         personService.createNewUser(signUpRequest);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @Operation(summary = "Active account with email confirmation", description = "Confirm email of a new user")
+    @GetMapping("/activate/{id}/{token}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<?> activate(@Valid @PathVariable long id, @PathVariable String token) {
+
+        personService.confirmEmail(token, id);
+
+        return ResponseEntity.ok(new MessageResponse("Email confirmed successfully!"));
     }
 }

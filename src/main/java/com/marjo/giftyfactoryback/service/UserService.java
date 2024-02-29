@@ -18,7 +18,7 @@ public class UserService {
 
     @Transactional
     public Optional<User> findById(final long id) {
-        Optional<User> user = userRepository.findByPersonId(id);
+        Optional<User> user = userRepository.findById(id);
         return user;
     }
 }

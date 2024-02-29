@@ -36,7 +36,7 @@ public class IdeaService {
     @Transactional
     public long createIdea(long userConnectedPersonId, CreateOrModifyIdeaRequest createIdeaRequest) {
 
-        User connectedUser = userRepository.findByPersonId(userConnectedPersonId).get();
+        User connectedUser = userRepository.findById(userConnectedPersonId).get();
 
         if (CollectionUtils.isEmpty(createIdeaRequest.recipientsId()) 
             || createIdeaRequest.recipientsId().contains(null)) {
