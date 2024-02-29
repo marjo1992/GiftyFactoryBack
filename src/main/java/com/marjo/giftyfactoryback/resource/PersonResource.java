@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.marjo.giftyfactoryback.auth.UserDetailsImpl;
 import com.marjo.giftyfactoryback.error.exception.NoResultException;
 import com.marjo.giftyfactoryback.resource.input.CreateOrModifyPersonRequest;
+import com.marjo.giftyfactoryback.resource.output.IdeaResponse;
 import com.marjo.giftyfactoryback.resource.output.PersonResponse;
+import com.marjo.giftyfactoryback.service.IdeaService;
 import com.marjo.giftyfactoryback.service.PersonService;
 import com.marjo.giftyfactoryback.utils.CheckUtility;
 
@@ -37,6 +39,9 @@ public class PersonResource {
 
     @Autowired
     PersonService service;
+
+    @Autowired
+    IdeaService ideaService;
 
     /******** Get person by id ********/
     @Operation(summary = "Get a person by id", description = "Returns a person as per the id")
@@ -95,6 +100,35 @@ public class PersonResource {
 
         service.modifyPerson(userDetails.getPersonId(), id, personRequest);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get person of user", description = "Return persons associated to connected user")
+    @GetMapping()
+    public PersonResponse getPersonsAssociatedToConnectedUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return service.findById(userDetails.getPersonId())
+                .map(PersonResponse.fromPerson)
+                .orElseThrow(() -> new NoResultException("An error has occured"));
+    }
+
+    @Operation(summary = "Get persons manage by connected user", description = "Return persons managed by connected user")
+    @GetMapping("/owned")
+    public List<PersonResponse> getPersonsOwnedByToConnectedUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return service.getPersonsOwnedByUser(userDetails.getPersonId()).stream()
+                .map(PersonResponse.fromPerson)
+                .toList();
+    }
+    
+    /******** Get ideas by person id ********/
+    @Operation(summary = "Get ideas for a person", description = "Returns a liste of idea as per the person id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved"),
+            @ApiResponse(responseCode = "404", description = "No idea exists for person with id")
+    })
+    @GetMapping("/{id}/ideas")
+    public List<IdeaResponse> getIdeas(@PathVariable("id") @Parameter(name = "id", description = "person id", example = "1") long id) {
+        return ideaService.findByRecipientId(id).stream()
+                .map(IdeaResponse.fromIdea)
+                .toList();
     }
 
 }

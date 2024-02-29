@@ -1,5 +1,6 @@
 package com.marjo.giftyfactoryback.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -12,5 +13,7 @@ import com.marjo.giftyfactoryback.entity.Idea;
 public interface IdeaRepository extends CrudRepository<Idea, Long> {
 
         Optional<Idea> findById(@Param("id") long id);
+
+        List<Idea> findByRecipients_Id(@Param("id") long id);
 
 }

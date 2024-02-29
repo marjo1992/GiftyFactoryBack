@@ -27,4 +27,6 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
 
         Optional<Person> findById(@Param("id") long id);
 
+        List<Person> findByOwner_PersonId(@Param("id") long id);
+
 }

@@ -19,8 +19,8 @@ public class CheckUtility {
     public final static BiPredicate<Person, User> confirmOrThrowPersonIsAssociatedToOrOwnedByUser = (personToModify,
             userConnected) -> {
         if (userConnected.getPersonId() != personToModify.getId()
-                && userConnected.getPersonId() != personToModify.getOwner().getPersonId()) {
-            new NotAuthorizedActionException("User has no rights on this person");
+                && (personToModify.getOwner() == null || userConnected.getPersonId() != personToModify.getOwner().getPersonId())) {
+            throw new NotAuthorizedActionException("User has no rights on this person");
         }
         return true;
     };

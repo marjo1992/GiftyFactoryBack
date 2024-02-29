@@ -78,7 +78,7 @@ public class PersonService {
         user.setHimselfOwner(true);
         user.setEmailToken(token);
         userRepository.save(user);
-        
+
         emailService.sendHtmlEmail(user.getPersonId(), signUpRequest.email(), token);
     }
 
@@ -120,8 +120,13 @@ public class PersonService {
     }
 
     @Transactional
+    public List<Person> getPersonsOwnedByUser(long id) {
+        return personRepository.findByOwner_PersonId(id);
+    }
+
+    @Transactional
     public void confirmEmail(String token, long id) {
-        
+
         Optional<User> userOpt = userRepository.findById(id);
 
         if (userOpt.isEmpty()) {
@@ -134,7 +139,7 @@ public class PersonService {
             throw new NoPersonExistsException("This person has already confirmed his email");
         }
 
-        if (! StringUtils.equals(user.getEmailToken(), token)) {
+        if (!StringUtils.equals(user.getEmailToken(), token)) {
             throw new NoPersonExistsException("Invalid token");
         }
 
@@ -142,6 +147,5 @@ public class PersonService {
         user.setEmailToken(null);
         userRepository.save(user);
     }
-
 
 }

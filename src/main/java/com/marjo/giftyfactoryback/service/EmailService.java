@@ -23,6 +23,7 @@ public class EmailService {
         String htmlContent = "<h1>Confirm your email to finish your subcription to Gifty</h1>" +
                 "<p>Click on next link to activate your account :"+
                 "<a href='http://localhost:8081/api/auth/activate/" + userId + "/" + token + "'/>Confirm link</a></p>";
+                // TODO : Send a prettier email
         message.setContent(htmlContent, "text/html; charset=utf-8");
 
         mailSender.send(message);

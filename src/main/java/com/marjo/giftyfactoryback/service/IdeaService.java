@@ -34,6 +34,11 @@ public class IdeaService {
     }
 
     @Transactional
+    public List<Idea> findByRecipientId(final long id) {
+        return ideaRepository.findByRecipients_Id(id);
+    }
+
+    @Transactional
     public long createIdea(long userConnectedPersonId, CreateOrModifyIdeaRequest createIdeaRequest) {
 
         User connectedUser = userRepository.findById(userConnectedPersonId).get();
